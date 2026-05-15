@@ -64,7 +64,11 @@ st.markdown("---")
 # Dimensions Overview
 st.header("🏷️ Dimension Tables")
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Geographic", "Products", "Customers", "Sales People", "Transactions"])
+# Expand to 9 dimension tables
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
+    "Geographic", "Products", "Customers", "Sales People", "Transactions",
+    "Time", "Pricing", "Technical Specs", "Shop Metrics"
+])
 
 with tab1:
     st.subheader("Geographic Dimensions")
@@ -74,7 +78,7 @@ with tab1:
 
 with tab2:
     st.subheader("Product Dimensions")
-    prod_dims = filtered_df[['PC Make', 'PC Model', 'Storage Type', 'Storage Capacity', 'RAM']].drop_duplicates().reset_index(drop=True)
+    prod_dims = filtered_df[['PC Make', 'PC Model', 'Storage Type', 'Storage Capacity', 'RAM', 'PC Market Price']].drop_duplicates().reset_index(drop=True)
     st.dataframe(prod_dims, use_container_width=True)
     st.info(f"Total unique products: {len(prod_dims)}")
 
@@ -86,14 +90,42 @@ with tab3:
 
 with tab4:
     st.subheader("Sales Person Dimensions")
-    sales_dims = filtered_df[['Sales Person Name', 'Sales Person Department']].drop_duplicates().reset_index(drop=True)
+    sales_dims = filtered_df[['Sales Person Name', 'Sales Person Department', 'Total Sales per Employee']].drop_duplicates().reset_index(drop=True)
     st.dataframe(sales_dims, use_container_width=True)
     st.info(f"Total unique sales people: {len(sales_dims)}")
 
 with tab5:
     st.subheader("Transaction Dimensions")
-    trans_dims = filtered_df[['Payment Method', 'Channel', 'Priority']].drop_duplicates().reset_index(drop=True)
+    trans_dims = filtered_df[['Payment Method', 'Channel', 'Priority', 'Discount Amount', 'Finance Amount', 'Cost of Repairs']].drop_duplicates().reset_index(drop=True)
     st.dataframe(trans_dims, use_container_width=True)
+
+with tab6:
+    st.subheader("Time Dimensions")
+    time_df = filtered_df[['Purchase Date', 'Ship Date']].drop_duplicates().reset_index(drop=True).copy()
+    # add components where possible
+    time_df['Purchase Year'] = time_df['Purchase Date'].dt.year
+    time_df['Purchase Month'] = time_df['Purchase Date'].dt.month
+    time_df['Purchase Day'] = time_df['Purchase Date'].dt.day
+    st.dataframe(time_df, use_container_width=True)
+    st.info(f"Total unique time points: {len(time_df)}")
+
+with tab7:
+    st.subheader("Pricing Dimensions")
+    pricing_dims = filtered_df[['Cost Price', 'Sale Price', 'Discount Amount', 'PC Market Price', 'Finance Amount']].drop_duplicates().reset_index(drop=True)
+    st.dataframe(pricing_dims, use_container_width=True)
+    st.info(f"Total unique pricing rows: {len(pricing_dims)}")
+
+with tab8:
+    st.subheader("Technical Specs")
+    tech_dims = filtered_df[['RAM', 'Storage Type', 'Storage Capacity']].drop_duplicates().reset_index(drop=True)
+    st.dataframe(tech_dims, use_container_width=True)
+    st.info(f"Total unique technical spec sets: {len(tech_dims)}")
+
+with tab9:
+    st.subheader("Shop Metrics")
+    shop_dims = filtered_df[['Shop Name', 'Shop Age', 'Total Sales per Employee']].drop_duplicates().reset_index(drop=True)
+    st.dataframe(shop_dims, use_container_width=True)
+    st.info(f"Total unique shops: {len(shop_dims)}")
 
 st.markdown("---")
 
